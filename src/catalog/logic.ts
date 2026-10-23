@@ -1,15 +1,16 @@
+const normalize = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+
 import type {
   Restaurant,
   RestaurantFilters,
   RestaurantWithSummary,
   Suggestion,
   Visit,
-} from '../api/types'
-import { db } from './db'
+} from './types'
 
-/** Junta o restaurante aos agregados de visita, como o `GET /restaurants` faz. */
-export function withSummary(restaurant: Restaurant): RestaurantWithSummary {
-  const visits = db.visits.filter((visit) => visit.restaurantId === restaurant.id)
+
+/** Calcula o resumo a partir das visitas do próprio restaurante. */
+export function withSummary(restaurant: Restaurant, visits: Visit[]): RestaurantWithSummary {
 
   const lastVisitedAt = visits.reduce<string | null>(
     (latest, visit) => (!latest || visit.visitedAt > latest ? visit.visitedAt : latest),
@@ -42,8 +43,8 @@ export function applyFilters(
   let result = list.filter((item) => item.status === status)
 
   if (filters.search) {
-    const term = filters.search.toLowerCase()
-    result = result.filter((item) => item.name.toLowerCase().includes(term))
+    const term = normalize(filters.search.trim())
+    result = result.filter((item) => normalize(item.name).includes(term))
   }
 
   const cuisineTypeIds = asList(filters.cuisineTypeIds)
@@ -56,11 +57,6 @@ export function applyFilters(
   const tagIds = asList(filters.tagIds)
   if (tagIds.length) {
     result = result.filter((item) => item.tags.some((tag) => tagIds.includes(tag.id)))
-  }
-
-  if (filters.priceRanges?.length) {
-    const ranges = asList(filters.priceRanges as unknown as string[])
-    result = result.filter((item) => item.priceRange && ranges.includes(item.priceRange))
   }
 
   if (filters.city) {
@@ -85,16 +81,10 @@ const PRIORITY_WEIGHT = { HIGH: 30, NORMAL: 15, LOW: 5 } as const
 
 function daysSince(iso: string | null): number | null {
   if (!iso) return null
-  return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000)
+  return Math.floor((Date.now() - new Date(iso.length === 10 ? `${iso}T12:00:00` : iso).getTime()) / 86_400_000)
 }
 
-/**
- * Heurística do "vamos aonde?".
- *
- * Aproxima o comportamento do back, que não está replicado aqui: o objetivo é
- * a demonstração devolver sugestões plausíveis e explicadas, não bater
- * número a número com a implementação real.
- */
+/** Pontua desejo, novidade, avaliações e tempo desde a última visita. */
 export function score(item: RestaurantWithSummary): Suggestion {
   const reasons: string[] = []
   let total = PRIORITY_WEIGHT[item.wishlistPriority]
@@ -145,10 +135,4 @@ export function rankSuggestions(
   }
 
   return [...scored].sort((a, b) => b.score - a.score).slice(0, limit)
-}
-
-export function visitsOf(restaurantId: string): Visit[] {
-  return db.visits
-    .filter((visit) => visit.restaurantId === restaurantId)
-    .sort((a, b) => b.visitedAt.localeCompare(a.visitedAt))
 }

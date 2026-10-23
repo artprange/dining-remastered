@@ -1,26 +1,23 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { cuisineTypesQuery, suggestionQuery } from '@/api/queries'
-import type { PriceRange, Suggestion, SuggestionFilters } from '@/api/types'
-import { errorMessage } from '@/api/client'
+import { cuisineTypesQuery, suggestionQuery } from '@/catalog/queries'
+import type { Suggestion, SuggestionFilters } from '@/catalog/types'
+import { errorMessage } from '@/catalog/errors'
 import { RestaurantCard } from '@/components/RestaurantCard'
 import { Button, Card, EmptyState, ErrorState, Screen, Spinner } from '@/components/ui'
 import { ChipSelect, Field, Toggle } from '@/components/form'
-import { PRICE_RANGES, PRICE_RANGE_LABELS } from '@/lib/format'
 
 export const Route = createFileRoute('/')({ component: SuggestionScreen })
 
 interface Draft {
   cuisineTypeIds: string[]
-  priceRanges: PriceRange[]
   onlyNotVisited: boolean
   onlyWouldReturn: boolean
 }
 
 const EMPTY_DRAFT: Draft = {
   cuisineTypeIds: [],
-  priceRanges: [],
   onlyNotVisited: false,
   onlyWouldReturn: false,
 }
@@ -41,9 +38,8 @@ function SuggestionScreen() {
       filters: {
         strategy,
         limit: 3,
-        // Filtro vazio não vira parâmetro: o back trata ausência como "tudo".
+        // Filtro vazio inclui todas as opções.
         ...(draft.cuisineTypeIds.length > 0 && { cuisineTypeIds: draft.cuisineTypeIds }),
-        ...(draft.priceRanges.length > 0 && { priceRanges: draft.priceRanges }),
         ...(draft.onlyNotVisited && { onlyNotVisited: true }),
         ...(draft.onlyWouldReturn && { onlyWouldReturn: true }),
       },
@@ -53,8 +49,9 @@ function SuggestionScreen() {
   }
 
   return (
-    <Screen title="Vamos aonde?" subtitle="Filtra o que der na telha e deixa o app decidir.">
-      <Card className="mb-4 space-y-4">
+    <Screen title="Vamos aonde?" subtitle="Um lugar novo ou aquele favorito? O próximo encontro começa aqui.">
+      <Card className="mb-5 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">Qual é a vontade?</h2><span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-ink">Bora comer</span></div>
         <Field label="Culinária">
           <ChipSelect
             options={(cuisineTypes.data ?? []).map((cuisine) => ({
@@ -63,39 +60,26 @@ function SuggestionScreen() {
             }))}
             selected={draft.cuisineTypeIds}
             onChange={(cuisineTypeIds) => setDraft({ ...draft, cuisineTypeIds })}
-            emptyLabel="Nenhuma culinária cadastrada — dá para criar em Ajustes."
-          />
-        </Field>
-
-        <Field label="Faixa de preço">
-          <ChipSelect
-            options={PRICE_RANGES.map((range) => ({
-              value: range,
-              label: PRICE_RANGE_LABELS[range],
-            }))}
-            selected={draft.priceRanges}
-            onChange={(priceRanges) =>
-              setDraft({ ...draft, priceRanges: priceRanges as PriceRange[] })
-            }
+            emptyLabel="Nenhuma culinária disponível ainda."
           />
         </Field>
 
         <div>
           <Toggle
-            label="Só lugares onde a gente nunca foi"
+            label="Experimentar um lugar novo"
             checked={draft.onlyNotVisited}
             onChange={(onlyNotVisited) => setDraft({ ...draft, onlyNotVisited })}
           />
           <Toggle
-            label="Só lugares onde a gente voltaria"
+            label="Repetir um favorito"
             checked={draft.onlyWouldReturn}
             onChange={(onlyWouldReturn) => setDraft({ ...draft, onlyWouldReturn })}
           />
         </div>
 
-        <div className="flex gap-2">
+        <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-[1.5fr_1fr]">
           <Button block onClick={() => ask('RANKED')}>
-            Me dá 3 opções
+            Ver 3 opções
           </Button>
           <Button variant="secondary" onClick={() => ask('RANDOM')}>
             Sortear
@@ -130,8 +114,8 @@ function Results({
   if (!asked) {
     return (
       <EmptyState
-        title="Nada decidido ainda"
-        description="Escolhe os filtros ali em cima e pede uma sugestão."
+        title="O próximo favorito está por aí"
+        description="Escolha o que combina com hoje. A gente ajuda com a decisão."
       />
     )
   }
@@ -144,12 +128,7 @@ function Results({
     return (
       <EmptyState
         title="Nenhum lugar passou no filtro"
-        description="Ou o filtro está apertado demais, ou falta cadastrar lugares."
-        action={
-          <Link to="/restaurants/new">
-            <Button variant="secondary">Cadastrar um lugar</Button>
-          </Link>
-        }
+        description="Tente outros filtros. Talvez o catálogo ainda esteja vazio."
       />
     )
   }

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "restaurante-exemplo",
+    "name": "Restaurante de exemplo",
+    "cuisines": [
+      "Italiana"
+    ],
+    "tags": [
+      "Ao ar livre"
+    ],
+    "status": "ACTIVE",
+    "wishlistPriority": "HIGH",
+    "address": "Rua de exemplo, 123",
+    "neighborhood": "Centro",
+    "city": "Sua cidade",
+    "notes": "Exemplo fictício: substitua pelos seus dados.",
+    "wouldReturn": true,
+    "visits": [
+      {
+        "date": "2026-10-20",
+        "rating": 4,
+        "notes": "Gostamos da massa."
+      }
+    ]
+  }
+]

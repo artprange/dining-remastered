@@ -16,11 +16,12 @@ export function Screen({
   children: ReactNode
 }) {
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 pt-6">
-      <header className="mb-5 flex items-start justify-between gap-3">
+    <div className="mx-auto w-full max-w-xl px-4 pt-5 sm:px-6 sm:pt-8">
+      <header className="hero mb-5 flex items-start justify-between gap-3 overflow-hidden rounded-[2rem] px-6 py-7 sm:py-9">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-          {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
+          <p className="mb-5 text-xs font-extrabold uppercase tracking-[0.24em] text-accent">Dining <span className="text-white/60">/ nosso roteiro</span></p>
+          <h1 className="relative text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{title}</h1>
+          {subtitle && <p className="relative mt-3 max-w-xs text-sm leading-relaxed text-white/85">{subtitle}</p>}
         </div>
         {action}
       </header>
@@ -39,7 +40,7 @@ export function Card({
   return (
     <div
       className={cx(
-        'rounded-2xl border border-line bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]',
+        'rounded-[1.75rem] border border-line bg-card p-5 shadow-[0_8px_30px_-20px_rgba(57,24,109,0.25)] sm:p-6',
         className,
       )}
     >
@@ -60,8 +61,8 @@ export function Button({
   ...props
 }: ButtonProps) {
   const styles = {
-    primary: 'bg-brand text-white hover:opacity-90',
-    secondary: 'border border-line bg-card text-ink hover:bg-brand-soft',
+    primary: 'bg-brand text-white shadow-[0_5px_0_var(--color-brand-deep)] hover:bg-brand-deep active:translate-y-0.5 active:shadow-none',
+    secondary: 'border border-transparent bg-accent text-ink hover:brightness-95',
     ghost: 'text-muted hover:text-ink',
     danger: 'border border-line bg-card text-red-600 hover:bg-red-50',
   }[variant]
@@ -70,7 +71,7 @@ export function Button({
     <button
       className={cx(
         // 44px de altura mínima: alvo de toque confortável no celular.
-        'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50',
         styles,
         block && 'w-full',
         className,
@@ -88,7 +89,7 @@ export function Chip({
   tone?: 'neutral' | 'brand' | 'positive' | 'negative'
 }) {
   const tones = {
-    neutral: 'border-line bg-surface text-muted',
+    neutral: 'border-transparent bg-surface text-muted',
     brand: 'border-transparent bg-brand-soft text-brand',
     positive: 'border-transparent bg-emerald-50 text-emerald-700',
     negative: 'border-transparent bg-red-50 text-red-700',
@@ -124,8 +125,9 @@ export function EmptyState({
   action?: ReactNode
 }) {
   return (
-    <div className="rounded-2xl border border-dashed border-line px-6 py-12 text-center">
-      <p className="font-medium">{title}</p>
+    <div className="rounded-[1.75rem] border border-coral/30 bg-peach px-5 py-7 text-center">
+      <div aria-hidden="true" className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-coral text-white"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="size-7"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M2 3v6m-1-6v3m2-3v3M2 9v12M22 3v18m0-18c-3 3-3 7 0 7"/></svg></div>
+      <p className="text-lg font-bold">{title}</p>
       {description && <p className="mx-auto mt-1 max-w-sm text-sm text-muted">{description}</p>}
       {action && <div className="mt-4 flex justify-center">{action}</div>}
     </div>

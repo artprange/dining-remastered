@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { errorMessage } from '@/api/client'
-import { restaurantsQuery } from '@/api/queries'
+import { errorMessage } from '@/catalog/errors'
+import { restaurantsQuery } from '@/catalog/queries'
 import { RestaurantCard } from '@/components/RestaurantCard'
 import { Input } from '@/components/form'
-import { Button, EmptyState, ErrorState, Screen, Spinner } from '@/components/ui'
+import { EmptyState, ErrorState, Screen, Spinner } from '@/components/ui'
 
 export const Route = createFileRoute('/restaurants/')({ component: RestaurantListScreen })
 
@@ -20,11 +20,6 @@ function RestaurantListScreen() {
       title="Lugares"
       subtitle={
         restaurants.data ? `${restaurants.data.length} lugar(es) na lista` : 'Carregando...'
-      }
-      action={
-        <Link to="/restaurants/new">
-          <Button variant="secondary">Novo</Button>
-        </Link>
       }
     >
       <div className="mb-4">
@@ -49,14 +44,7 @@ function RestaurantListScreen() {
           description={
             search
               ? 'Tenta outro pedaço do nome.'
-              : 'Cadastra os lugares que vocês já conhecem e os que querem conhecer.'
-          }
-          action={
-            search ? undefined : (
-              <Link to="/restaurants/new">
-                <Button>Cadastrar o primeiro</Button>
-              </Link>
-            )
+              : 'Os lugares aparecerão aqui quando o catálogo for atualizado.'
           }
         />
       ) : (
@@ -70,7 +58,7 @@ function RestaurantListScreen() {
   )
 }
 
-/** Evita uma requisição por tecla digitada na busca. */
+/** Aguarda uma pausa na digitação antes de filtrar. */
 function useDebounced<T>(value: T, delay: number): T {
   const [debounced, setDebounced] = useState(value)
 

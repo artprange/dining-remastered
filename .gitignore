@@ -27,3 +27,7 @@ dist-ssr
 # Env local
 .env
 .env.local
+
+# Cloudflare local state
+.wrangler/
+.dev.vars*

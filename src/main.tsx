@@ -3,15 +3,14 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { routeTree } from './routeTree.gen'
-import { startDemoMode } from './mocks'
 import './styles.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Numa rede ruim, insistir três vezes só atrasa a mensagem de erro.
-      retry: 1,
-      staleTime: 30_000,
+      // O catálogo é local e muda apenas em uma nova publicação.
+      retry: false,
+      staleTime: Infinity,
     },
   },
 })
@@ -32,15 +31,10 @@ const rootElement = document.getElementById('root')
 
 if (!rootElement) throw new Error('Elemento #root nao encontrado no index.html.')
 
-// O modo demonstração precisa estar de pé antes do primeiro render: é ele que
-// intercepta as requisições. Fora dele, resolve na hora e segue direto.
-// `startDemoMode` nunca rejeita, então o render sempre acontece.
-startDemoMode().then(() => {
-  createRoot(rootElement).render(
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </StrictMode>,
-  )
-})
+createRoot(rootElement).render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  </StrictMode>,
+)

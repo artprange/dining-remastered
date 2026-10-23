@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
-import type { RestaurantWithSummary, Suggestion } from '@/api/types'
+import type { RestaurantWithSummary, Suggestion } from '@/catalog/types'
 import { Card, Chip } from './ui'
-import { PRICE_RANGE_SYMBOLS, formatRating, formatSince } from '@/lib/format'
+import { formatRating, formatSince } from '@/lib/format'
 
 function isSuggestion(item: RestaurantWithSummary): item is Suggestion {
   return 'reasons' in item
@@ -19,15 +19,15 @@ export function RestaurantCard({ restaurant }: { restaurant: RestaurantWithSumma
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h2 className="truncate font-semibold">{restaurant.name}</h2>
-            <p className="mt-0.5 truncate text-sm text-muted">
+            <h2 className="break-words text-lg font-bold">{restaurant.name}</h2>
+            <p className="mt-1 text-sm text-muted">
               {restaurant.cuisineTypes.map((cuisine) => cuisine.name).join(' · ') ||
                 'Sem culinária'}
               {place && ` — ${place}`}
             </p>
           </div>
 
-          <div className="shrink-0 text-right">
+          <div className="shrink-0 rounded-2xl bg-accent px-3 py-3 text-center">
             <p className="text-lg leading-none font-semibold">
               {formatRating(restaurant.averageRating)}
             </p>
@@ -43,7 +43,6 @@ export function RestaurantCard({ restaurant }: { restaurant: RestaurantWithSumma
           {!restaurant.visited && <Chip tone="brand">nunca fomos</Chip>}
           {restaurant.wouldReturn === true && <Chip tone="positive">voltaria</Chip>}
           {restaurant.wouldReturn === false && <Chip tone="negative">não voltaria</Chip>}
-          {restaurant.priceRange && <Chip>{PRICE_RANGE_SYMBOLS[restaurant.priceRange]}</Chip>}
           {restaurant.visited && <Chip>última: {formatSince(restaurant.lastVisitedAt)}</Chip>}
           {restaurant.tags.map((tag) => (
             <Chip key={tag.id}>{tag.name}</Chip>

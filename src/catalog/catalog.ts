@@ -4,6 +4,7 @@ import { applyFilters, rankSuggestions, withSummary } from './logic'
 
 /** Formato de edição; os campos opcionais têm padrões para simplificar o cadastro. */
 export interface CatalogEntry {
+  instagram?: string | null
   id: string
   name: string
   cuisines?: string[]
@@ -28,6 +29,7 @@ export function createCatalog(entries: CatalogEntry[]) {
       notes: visit.notes ?? null,
     })).sort((a, b) => b.visitedAt.localeCompare(a.visitedAt))
     const restaurant: Restaurant = {
+      instagram: entry.instagram ?? null,
       id: entry.id,
       name: entry.name,
       cuisineTypes: (entry.cuisines ?? []).map((name) => ({ id: name, name })),

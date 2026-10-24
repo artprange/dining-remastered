@@ -18,8 +18,7 @@ pelo celular na mesma rede, abra o endereço de rede mostrado no terminal.
 
 ## Cadastrar e atualizar lugares
 
-Edite `src/data/restaurants.json`. O catálogo começa vazio de propósito: os dados
-da antiga demo não são os seus restaurantes. O arquivo é uma lista de objetos:
+Edite `src/data/restaurants.json`. O arquivo é uma lista de objetos:
 
 ```json
 [
@@ -46,6 +45,7 @@ números e hífens; mantenha-os estáveis para preservar links.
 | Campo | Valores/padrão |
 | --- | --- |
 | `cuisines`, `tags` | Listas de nomes; padrão `[]`. Use o mesmo nome para a mesma categoria. |
+| `instagram` | Link HTTPS opcional para o perfil no Instagram. |
 | `status` | `ACTIVE` (padrão) ou `ARCHIVED`. Arquivados não entram na lista/sugestões normais. |
 | `wishlistPriority` | `LOW`, `NORMAL` (padrão), `HIGH`. |
 | `address`, `neighborhood`, `city`, `notes` | Texto opcional. |

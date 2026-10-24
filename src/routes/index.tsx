@@ -6,20 +6,16 @@ import type { Suggestion, SuggestionFilters } from '@/catalog/types'
 import { errorMessage } from '@/catalog/errors'
 import { RestaurantCard } from '@/components/RestaurantCard'
 import { Button, Card, EmptyState, ErrorState, Screen, Spinner } from '@/components/ui'
-import { ChipSelect, Field, Toggle } from '@/components/form'
+import { ChipSelect, Field } from '@/components/form'
 
 export const Route = createFileRoute('/')({ component: SuggestionScreen })
 
 interface Draft {
   cuisineTypeIds: string[]
-  onlyNotVisited: boolean
-  onlyWouldReturn: boolean
 }
 
 const EMPTY_DRAFT: Draft = {
   cuisineTypeIds: [],
-  onlyNotVisited: false,
-  onlyWouldReturn: false,
 }
 
 function SuggestionScreen() {
@@ -40,8 +36,6 @@ function SuggestionScreen() {
         limit: 3,
         // Filtro vazio inclui todas as opções.
         ...(draft.cuisineTypeIds.length > 0 && { cuisineTypeIds: draft.cuisineTypeIds }),
-        ...(draft.onlyNotVisited && { onlyNotVisited: true }),
-        ...(draft.onlyWouldReturn && { onlyWouldReturn: true }),
       },
       // Data como nonce: dois cliques seguidos nunca caem na mesma chave.
       nonce: Date.now(),
@@ -49,7 +43,7 @@ function SuggestionScreen() {
   }
 
   return (
-    <Screen title="Vamos aonde?" subtitle="Um lugar novo ou aquele favorito? O próximo encontro começa aqui.">
+    <Screen title="Vamos aonde?" subtitle="Escolha a culinária e encontre um lugar para hoje.">
       <Card className="mb-5 space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">Qual é a vontade?</h2><span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-ink">Bora comer</span></div>
         <Field label="Culinária">
@@ -63,19 +57,6 @@ function SuggestionScreen() {
             emptyLabel="Nenhuma culinária disponível ainda."
           />
         </Field>
-
-        <div>
-          <Toggle
-            label="Experimentar um lugar novo"
-            checked={draft.onlyNotVisited}
-            onChange={(onlyNotVisited) => setDraft({ ...draft, onlyNotVisited })}
-          />
-          <Toggle
-            label="Repetir um favorito"
-            checked={draft.onlyWouldReturn}
-            onChange={(onlyWouldReturn) => setDraft({ ...draft, onlyWouldReturn })}
-          />
-        </div>
 
         <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-[1.5fr_1fr]">
           <Button block onClick={() => ask('RANKED')}>

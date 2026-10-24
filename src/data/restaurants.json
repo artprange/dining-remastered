@@ -34,5 +34,35 @@
 		"name": "Dibetha Fratelli",
 		"cuisines": ["Italiana"],
 		"instagram": "https://www.instagram.com/dibethafratelli"
+	},
+	{
+		"id": "old-man-sandwich",
+		"name": "Old Man Sandwich",
+		"cuisines": ["Burger"],
+		"instagram": "https://www.instagram.com/oldmansandwich/"
+	},
+	{
+		"id": "caledonia-bar",
+		"name": "Caledonia Bar",
+		"cuisines": ["Burger", "Bar"],
+		"instagram": "https://www.instagram.com/caledoniabar/"
+	},
+	{
+		"id": "beef-burger",
+		"name": "Beef Burger",
+		"cuisines": ["Burger"],
+		"instagram": "https://www.instagram.com/beef_burger_beer/"
+	},
+	{
+		"id": "grind-house-braserito",
+		"name": "Grindhouse Braserito",
+		"cuisines": ["Burger"],
+		"instagram": "https://www.instagram.com/grindhouse_braserito/"
+	},
+	{
+		"id": "the-burger-map",
+		"name": "The Burger Map",
+		"cuisines": ["Burger"],
+		"instagram": "https://www.instagram.com/theburgermap/"
 	}
 ]

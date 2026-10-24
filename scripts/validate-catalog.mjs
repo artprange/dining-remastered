@@ -15,12 +15,20 @@ export function validateCatalog(data) {
   const ids = new Set()
   data.forEach((item, i) => {
     const path = `restaurantes[${i}]`
-    object(item, path, ['id', 'name', 'cuisines', 'tags', 'status', 'wishlistPriority', 'address', 'neighborhood', 'city', 'notes', 'wouldReturn', 'visits'])
+    object(item, path, ['instagram', 'id', 'name', 'cuisines', 'tags', 'status', 'wishlistPriority', 'address', 'neighborhood', 'city', 'notes', 'wouldReturn', 'visits'])
     string(item.id, `${path}.id`)
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.id)) fail(`${path}.id`, 'use letras minúsculas, números e hífens')
     if (ids.has(item.id)) fail(`${path}.id`, 'identificador duplicado')
     ids.add(item.id)
     string(item.name, `${path}.name`)
+    if (item.instagram != null) {
+      let url
+      try { url = new URL(item.instagram) } catch { fail(`${path}.instagram`, 'URL inválida') }
+      if (url.protocol !== 'https:' || !['instagram.com', 'www.instagram.com'].includes(url.hostname) || url.username || url.password) {
+        fail(`${path}.instagram`, 'use um link HTTPS do Instagram')
+      }
+    }
+
     for (const field of ['cuisines', 'tags']) {
       if (item[field] === undefined) continue
       if (!Array.isArray(item[field])) fail(`${path}.${field}`, 'esperada uma lista de textos')

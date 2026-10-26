@@ -34,6 +34,7 @@ export interface Visit {
 
 /** Restaurante normalizado a partir do JSON. */
 export interface Restaurant {
+  instagram?: string | null
   id: string
   name: string
   cuisineTypes: CuisineType[]
